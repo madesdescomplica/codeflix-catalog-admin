@@ -3,7 +3,7 @@ from uuid import UUID, uuid4
 from faker import Faker
 import pytest
 
-from src.core.category.domain.category import Category
+from src.core.category.domain import Category
 
 
 class TestCategory:
@@ -51,7 +51,7 @@ class TestCategory:
         assert category.is_active is False
 
     def test_can_not_create_category_with_empty_name(self):
-        with pytest.raises(ValueError, match="name can not be empty"):
+        with pytest.raises(ValueError, match="name can not be empty or null"):
             Category(name="")
 
     def test_can_not_create_category_with_null_name(self):
