@@ -3,7 +3,7 @@ from uuid import UUID, uuid4
 from faker import Faker
 import pytest
 
-from category import Category
+from src.core.category.domain.category import Category
 
 
 class TestCategory:
