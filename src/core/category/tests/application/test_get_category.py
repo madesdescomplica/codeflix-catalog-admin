@@ -18,17 +18,28 @@ class TestGetCategory:
     name = faker.word()
     description = faker.sentence()
 
-    def test_get_category_call_repository(self):
-        mock_category = Category(
+    @pytest.fixture
+    def category(self) -> Category:
+        return Category(
             id=self.id,
             name=self.name,
             description=self.description,
             is_active=True
         )
-        mock_repository = create_autospec(CategoryRepository)
-        mock_repository.get_by_id.return_value = mock_category
+
+    @pytest.fixture
+    def mock_repository(self, category: Category) -> CategoryRepository:
+        repository = create_autospec(CategoryRepository, instance=True)
+        repository.get_by_id.return_value = category
+        return repository
+
+    def test_get_category_call_repository(
+        self,
+        mock_repository: CategoryRepository,
+        category: Category
+    ):
         use_case = GetCategory(repository=mock_repository)
-        request = GetCategoryRequest(id=mock_category.id)
+        request = GetCategoryRequest(id=category.id)
 
         use_case.execute(request)
 
@@ -45,21 +56,17 @@ class TestGetCategory:
 
         assert str(exc_info.value) == f"Category with id {request.id} not found"
 
-    def test_when_category_exists_then_return_response_dto(self):
-        mock_category = Category(
-            id=self.id,
-            name=self.name,
-            description=self.description,
-            is_active=True
-        )
-        mock_repository = create_autospec(CategoryRepository)
-        mock_repository.get_by_id.return_value = mock_category
+    def test_when_category_exists_then_return_response_dto(
+        self,
+        mock_repository: CategoryRepository,
+        category: Category
+    ):
         use_case = GetCategory(repository=mock_repository)
-        request = GetCategoryRequest(id=mock_category.id)
+        request = GetCategoryRequest(id=category.id)
 
         response = use_case.execute(request)
 
-        assert response.id == mock_category.id
-        assert response.name == mock_category.name
-        assert response.description == mock_category.description
-        assert response.is_active == mock_category.is_active
+        assert response.id == category.id
+        assert response.name == category.name
+        assert response.description == category.description
+        assert response.is_active == category.is_active
