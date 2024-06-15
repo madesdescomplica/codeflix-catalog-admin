@@ -14,13 +14,15 @@ from src.core.category.application import (
 
 class TestCreateCategory:
     faker = Faker()
+    name=faker.word()
+    description=faker.sentence()
 
     def test_create_category_with_valid_data(self):
         mock_repository = MagicMock(CategoryRepository)
         use_case = CreateCategory(repository=mock_repository)
         request = CreateCategoryRequest(
-            name=self.faker.word(),
-            description=self.faker.sentence(),
+            name=self.name,
+            description=self.description,
             is_active=True  # default
         )
 
@@ -28,7 +30,6 @@ class TestCreateCategory:
 
         assert category_id is not None
         assert isinstance(category_id, UUID)
-        assert mock_repository.save.called is True
 
     def test_create_category_with_invalid_data(self):
         mock_repository = MagicMock(CategoryRepository)
@@ -40,3 +41,29 @@ class TestCreateCategory:
 
         assert exc_info.type is InvalidCategoryData
         assert str(exc_info.value) == "name can not be empty or null"
+
+    def test_create_category_call_repository(self):
+        mock_repository = MagicMock(CategoryRepository)
+        use_case = CreateCategory(repository=mock_repository)
+        request = CreateCategoryRequest(
+            name=self.name,
+            description=self.description,
+            is_active=True  # default
+        )
+
+        use_case.execute(request)
+
+        assert mock_repository.save.called is True
+
+
+    def test_create_category_do_not_call_repository_with_invalid_data(self):
+        mock_repository = MagicMock(CategoryRepository)
+        use_case = CreateCategory(repository=mock_repository)
+        request = CreateCategoryRequest(name="")
+
+        with pytest.raises(InvalidCategoryData, match="name can not be empty or null") as exc_info:
+            use_case.execute(request)
+
+        assert exc_info.type is InvalidCategoryData
+        assert str(exc_info.value) == "name can not be empty or null"
+        assert mock_repository.save.called is False
