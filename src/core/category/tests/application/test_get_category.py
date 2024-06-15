@@ -4,11 +4,8 @@ from uuid import uuid4
 from faker import Faker
 import pytest
 
-from src.core.category.application import (
-    CategoryNotFound,
-    GetCategory,
-    GetCategoryRequest
-)
+from src.core.category.application.exceptions import CategoryNotFound
+from src.core.category.application.usecases import GetCategory, GetCategoryRequest
 from src.core.category.domain import Category, CategoryRepository
 
 

@@ -4,12 +4,12 @@ from uuid import UUID
 from faker import Faker
 import pytest
 
-from src.core.category.domain import CategoryRepository
-from src.core.category.application import (
+from src.core.category.application.exceptions import InvalidCategory
+from src.core.category.application.usecases import (
     CreateCategory,
     CreateCategoryRequest,
-    InvalidCategory
 )
+from src.core.category.domain import CategoryRepository
 
 
 class TestCreateCategory:

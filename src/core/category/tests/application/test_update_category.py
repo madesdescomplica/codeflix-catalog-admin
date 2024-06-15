@@ -4,13 +4,9 @@ from uuid import uuid4
 from faker import Faker
 import pytest
 
-from src.core.category.application import (
-    CategoryNotFound,
-    InvalidCategory,
-    UpdateCategory,
-    UpdateCategoryRequest
-)
-from src.core.category.domain import Category,CategoryRepository
+from src.core.category.application.exceptions import CategoryNotFound, InvalidCategory
+from src.core.category.application.usecases import UpdateCategory, UpdateCategoryRequest
+from src.core.category.domain import Category, CategoryRepository
 
 
 class TestUpdateCategory:
