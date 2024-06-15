@@ -12,4 +12,14 @@ class ListCategory:
     repository: CategoryRepository
 
     def execute(self) -> ListCategoryResponse:
-        self.repository.list()
+        categories = self.repository.list()
+
+        return ListCategoryResponse(data=[
+            Category(
+                id=category.id,
+                name=category.name,
+                description=category.description,
+                is_active=category.is_active
+            )
+            for category in categories
+        ])

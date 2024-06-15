@@ -26,7 +26,7 @@ class TestListCategory:
     @pytest.fixture
     def mock_repository(self, category: Category) -> CategoryRepository:
         repository = create_autospec(CategoryRepository, instance=True)
-        repository.get_by_id.return_value = category
+        repository.list.return_value = [category]
         return repository
 
     def test_should_ListCategory_call_repository_with_list_method(
@@ -38,3 +38,13 @@ class TestListCategory:
         use_case.execute()
 
         assert mock_repository.list.called is True
+
+    def test_should_ListCategory_return_list_of_Category(
+        self,
+        mock_repository: CategoryRepository
+    ):
+        use_case = ListCategory(repository=mock_repository)
+
+        response = use_case.execute()
+
+        assert response.data == mock_repository.list.return_value
