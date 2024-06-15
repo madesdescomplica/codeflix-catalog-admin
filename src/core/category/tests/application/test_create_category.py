@@ -17,8 +17,11 @@ class TestCreateCategory:
     name=faker.word()
     description=faker.sentence()
 
-    def test_create_category_with_valid_data(self):
-        mock_repository = MagicMock(CategoryRepository)
+    @pytest.fixture
+    def mock_repository(self) -> CategoryRepository:
+        return MagicMock(CategoryRepository)
+
+    def test_create_category_with_valid_data(self, mock_repository: CategoryRepository):
         use_case = CreateCategory(repository=mock_repository)
         request = CreateCategoryRequest(
             name=self.name,
@@ -31,8 +34,7 @@ class TestCreateCategory:
         assert category_id is not None
         assert isinstance(category_id, UUID)
 
-    def test_create_category_with_invalid_data(self):
-        mock_repository = MagicMock(CategoryRepository)
+    def test_create_category_with_invalid_data(self, mock_repository: CategoryRepository):
         use_case = CreateCategory(repository=mock_repository)
         request = CreateCategoryRequest(name="")
 
@@ -42,8 +44,7 @@ class TestCreateCategory:
         assert exc_info.type is InvalidCategory
         assert str(exc_info.value) == "name can not be empty or null"
 
-    def test_create_category_call_repository(self):
-        mock_repository = MagicMock(CategoryRepository)
+    def test_create_category_call_repository(self, mock_repository: CategoryRepository):
         use_case = CreateCategory(repository=mock_repository)
         request = CreateCategoryRequest(
             name=self.name,
@@ -55,8 +56,10 @@ class TestCreateCategory:
 
         assert mock_repository.save.called is True
 
-    def test_create_category_do_not_call_repository_with_invalid_data(self):
-        mock_repository = MagicMock(CategoryRepository)
+    def test_create_category_do_not_call_repository_with_invalid_data(
+        self,
+        mock_repository: CategoryRepository
+    ):
         use_case = CreateCategory(repository=mock_repository)
         request = CreateCategoryRequest(name="")
 
