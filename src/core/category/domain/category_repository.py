@@ -21,3 +21,7 @@ class CategoryRepository(ABC):
     @abstractmethod
     def delete(self, id: UUID) -> None:
         raise NotImplementedError('Should implement method: delete')
+
+    @abstractmethod
+    def list(self) -> list[Category]:
+        raise NotImplementedError('Should implement method: list')
