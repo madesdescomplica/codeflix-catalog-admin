@@ -55,7 +55,6 @@ class TestCreateCategory:
 
         assert mock_repository.save.called is True
 
-
     def test_create_category_do_not_call_repository_with_invalid_data(self):
         mock_repository = MagicMock(CategoryRepository)
         use_case = CreateCategory(repository=mock_repository)
