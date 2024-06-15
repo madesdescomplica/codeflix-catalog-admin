@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from uuid import UUID
 
-from src.core.category.application import CategoryNotFound
+from src.core.category.application import CategoryNotFound, InvalidCategory
 from src.core.category.domain import CategoryRepository
 
 
@@ -28,3 +28,20 @@ class UpdateCategory:
 
         if category is None:
             raise CategoryNotFound(f"Category with id {request.id} not found")
+
+        try:
+            current_name = category.name
+            current_description = category.description
+
+            if request.name is not None:
+                current_name = request.name
+
+            if request.description is not None:
+                current_description = request.description
+
+            category.update_category(
+                name=current_name,
+                description=current_description
+            )
+        except ValueError as e:
+            raise InvalidCategory(e)

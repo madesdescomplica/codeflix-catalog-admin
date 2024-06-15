@@ -1,5 +1,5 @@
 class CategoryNotFound(Exception):
     pass
 
-class InvalidCategoryData(Exception):
+class InvalidCategory(Exception):
     pass

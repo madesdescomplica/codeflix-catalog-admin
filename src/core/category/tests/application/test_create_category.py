@@ -8,7 +8,7 @@ from src.core.category.domain import CategoryRepository
 from src.core.category.application import (
     CreateCategory,
     CreateCategoryRequest,
-    InvalidCategoryData
+    InvalidCategory
 )
 
 
@@ -36,10 +36,10 @@ class TestCreateCategory:
         use_case = CreateCategory(repository=mock_repository)
         request = CreateCategoryRequest(name="")
 
-        with pytest.raises(InvalidCategoryData, match="name can not be empty or null") as exc_info:
+        with pytest.raises(InvalidCategory, match="name can not be empty or null") as exc_info:
             use_case.execute(request)
 
-        assert exc_info.type is InvalidCategoryData
+        assert exc_info.type is InvalidCategory
         assert str(exc_info.value) == "name can not be empty or null"
 
     def test_create_category_call_repository(self):
@@ -60,9 +60,9 @@ class TestCreateCategory:
         use_case = CreateCategory(repository=mock_repository)
         request = CreateCategoryRequest(name="")
 
-        with pytest.raises(InvalidCategoryData, match="name can not be empty or null") as exc_info:
+        with pytest.raises(InvalidCategory, match="name can not be empty or null") as exc_info:
             use_case.execute(request)
 
-        assert exc_info.type is InvalidCategoryData
+        assert exc_info.type is InvalidCategory
         assert str(exc_info.value) == "name can not be empty or null"
         assert mock_repository.save.called is False

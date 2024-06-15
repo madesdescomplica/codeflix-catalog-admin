@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from uuid import UUID
 
 from src.core.category.domain import Category, CategoryRepository
-from .exceptions import InvalidCategoryData
+from .exceptions import InvalidCategory
 
 
 @dataclass
@@ -27,7 +27,7 @@ class CreateCategory:
                 is_active=request.is_active
             )
         except ValueError as e:
-            raise InvalidCategoryData(e)
+            raise InvalidCategory(e)
 
         self.repository.save(category)
         return category.id
