@@ -38,3 +38,11 @@ class TestCategoryRepository:
 
         with pytest.raises(NotImplementedError, match='Should implement method: update'):
             category_repository.update(category)
+
+    @patch.multiple(CategoryRepository, __abstractmethods__=set())
+    def test_should_CategoryRepository_raise_a_NotImplementedError_if_delete_method_is_not_implemented(self):
+        category = Category(name=self.name, description=self.description)
+        category_repository = CategoryRepository()
+
+        with pytest.raises(NotImplementedError, match='Should implement method: delete'):
+            category_repository.delete(category.id)
