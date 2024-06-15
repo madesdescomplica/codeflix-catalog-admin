@@ -1,27 +1,42 @@
+from unittest.mock import MagicMock
 from uuid import UUID
 
 from faker import Faker
 import pytest
 
-from src.core.category.application import create_category, InvalidCategoryData
+from src.core.category.domain import CategoryRepository
+from src.core.category.application import (
+    CreateCategory,
+    CreateCategoryRequest,
+    InvalidCategoryData
+)
 
 
 class TestCreateCategory:
     faker = Faker()
 
     def test_create_category_with_valid_data(self):
-        category_id = create_category(
+        mock_repository = MagicMock(CategoryRepository)
+        use_case = CreateCategory(repository=mock_repository)
+        request = CreateCategoryRequest(
             name=self.faker.word(),
             description=self.faker.sentence(),
             is_active=True  # default
         )
 
+        category_id = use_case.execute(request)
+
         assert category_id is not None
         assert isinstance(category_id, UUID)
+        assert mock_repository.save.called is True
 
     def test_create_category_with_invalid_data(self):
+        mock_repository = MagicMock(CategoryRepository)
+        use_case = CreateCategory(repository=mock_repository)
+        request = CreateCategoryRequest(name="")
+
         with pytest.raises(InvalidCategoryData, match="name can not be empty or null") as exc_info:
-            create_category(name="")
+            use_case.execute(request)
 
         assert exc_info.type is InvalidCategoryData
         assert str(exc_info.value) == "name can not be empty or null"
