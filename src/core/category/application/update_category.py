@@ -39,6 +39,12 @@ class UpdateCategory:
             if request.description is not None:
                 current_description = request.description
 
+            if request.is_active is True:
+                category.activate()
+
+            if request.is_active is False:
+                category.deactivate()
+
             category.update_category(
                 name=current_name,
                 description=current_description
