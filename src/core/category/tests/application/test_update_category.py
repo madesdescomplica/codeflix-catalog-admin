@@ -54,7 +54,7 @@ class TestUpdateCategory:
 
         assert str(exc_info.value) == f"Category with id {request.id} not found"
 
-    def test_ensure_UpdateCategory_updates_name(
+    def test_should_UpdateCategory_updates_name(
         self,
         category: Category,
         mock_repository: CategoryRepository
@@ -67,7 +67,7 @@ class TestUpdateCategory:
 
         assert category.name == updated_name
 
-    def test_ensure_UpdateCategory_raises_exception_when_name_is_invalid(
+    def test_should_UpdateCategory_raises_exception_when_name_is_invalid(
         self,
         category: Category,
         mock_repository: CategoryRepository
@@ -78,7 +78,7 @@ class TestUpdateCategory:
         with pytest.raises(InvalidCategory, match="name can not be empty or null"):
             use_case.execute(request)
 
-    def test_ensure_UpdateCategory_updates_description(
+    def test_should_UpdateCategory_updates_description(
         self,
         category: Category,
         mock_repository: CategoryRepository
@@ -91,7 +91,7 @@ class TestUpdateCategory:
 
         assert category.description == updated_description
 
-    def test_ensure_UpdateCategory_updates_name_and_description(
+    def test_should_UpdateCategory_updates_name_and_description(
         self,
         category: Category,
         mock_repository: CategoryRepository
@@ -110,7 +110,7 @@ class TestUpdateCategory:
         assert category.name == updated_name
         assert category.description == updated_description
 
-    def test_ensure_UpdateCategory_activate_category(
+    def test_should_UpdateCategory_activate_category(
         self,
         category: Category,
         mock_repository: CategoryRepository
@@ -124,7 +124,7 @@ class TestUpdateCategory:
 
         assert category.is_active is True
 
-    def test_ensure_UpdateCategory_deactivate_category(
+    def test_should_UpdateCategory_deactivate_category(
         self,
         category: Category,
         mock_repository: CategoryRepository
@@ -136,3 +136,14 @@ class TestUpdateCategory:
 
         assert category.is_active is False
 
+    def test_should_UpdateCategory_call_repository_with_update_method(
+        self,
+        category: Category,
+        mock_repository: CategoryRepository
+    ):
+        use_case = UpdateCategory(repository=mock_repository)
+        request = UpdateCategoryRequest(id=uuid4())
+
+        use_case.execute(request)
+
+        mock_repository.update.assert_called_once_with(category)

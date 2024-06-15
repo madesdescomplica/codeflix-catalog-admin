@@ -51,3 +51,5 @@ class UpdateCategory:
             )
         except ValueError as e:
             raise InvalidCategory(e)
+
+        self.repository.update(category)
