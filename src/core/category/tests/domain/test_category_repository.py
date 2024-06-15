@@ -30,3 +30,11 @@ class TestCategoryRepository:
 
         with pytest.raises(NotImplementedError, match='Should implement method: get_by_id'):
             category_repository.get_by_id(category.id)
+
+    @patch.multiple(CategoryRepository, __abstractmethods__=set())
+    def test_should_CategoryRepository_raise_a_NotImplementedError_if_update_method_is_not_implemented(self):
+        category = Category(name=self.name, description=self.description)
+        category_repository = CategoryRepository()
+
+        with pytest.raises(NotImplementedError, match='Should implement method: update'):
+            category_repository.update(category)

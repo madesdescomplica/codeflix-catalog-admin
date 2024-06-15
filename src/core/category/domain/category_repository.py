@@ -13,3 +13,7 @@ class CategoryRepository(ABC):
     @abstractmethod
     def get_by_id(self, id: UUID) -> Category | None:
         raise NotImplementedError('Should implement method: get_by_id')
+
+    @abstractmethod
+    def update(self, category: Category):
+        raise NotImplementedError('Should implement method: update')
