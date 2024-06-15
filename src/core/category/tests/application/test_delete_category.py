@@ -17,17 +17,16 @@ from src.core.category.domain import Category, CategoryRepository
 
 class TestDeleteCategory:
     faker = Faker()
-    id = uuid4()
     name = faker.word()
     description = faker.sentence()
+    is_active = faker.boolean()
 
     @pytest.fixture
     def category(self) -> Category:
         return Category(
-            id=self.id,
             name=self.name,
             description=self.description,
-            is_active=True
+            is_active=self.is_active
         )
 
     @pytest.fixture
@@ -52,7 +51,7 @@ class TestDeleteCategory:
         mock_repository = create_autospec(CategoryRepository)
         mock_repository.get_by_id.return_value = None
         use_case = DeleteCategory(repository=mock_repository)
-        request = DeleteCategoryRequest(id=self.id)
+        request = DeleteCategoryRequest(id=uuid4())
 
         with pytest.raises(CategoryNotFound) as exc_info:
             use_case.execute(request)
@@ -73,7 +72,7 @@ class TestDeleteCategory:
         mock_repository = create_autospec(CategoryRepository)
         mock_repository.get_by_id.return_value = None
         use_case = DeleteCategory(repository=mock_repository)
-        request = DeleteCategoryRequest(id=self.id)
+        request = DeleteCategoryRequest(id=uuid4())
 
         with pytest.raises(CategoryNotFound):
             use_case.execute(request)

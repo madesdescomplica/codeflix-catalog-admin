@@ -13,12 +13,14 @@ class TestUpdateCategory:
     faker = Faker()
     name = faker.word()
     description = faker.sentence()
+    is_active = faker.boolean()
 
     @pytest.fixture
     def category(self) -> Category:
         return Category(
             name=self.name,
-            description=self.description
+            description=self.description,
+            is_active=self.is_active
         )
 
     @pytest.fixture
