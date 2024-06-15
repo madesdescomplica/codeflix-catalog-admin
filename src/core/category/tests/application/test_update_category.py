@@ -147,3 +147,16 @@ class TestUpdateCategory:
         use_case.execute(request)
 
         mock_repository.update.assert_called_once_with(category)
+
+    def test_should_UpdateCategory_not_call_repository_with_update_method_if_raise_exception(
+        self,
+        category: Category,
+        mock_repository: CategoryRepository
+    ):
+        use_case = UpdateCategory(repository=mock_repository)
+        request = UpdateCategoryRequest(id=category.id, name="")
+
+        with pytest.raises(InvalidCategory, match="name can not be empty or null"):
+            use_case.execute(request)
+
+        mock_repository.update.assert_not_called()
