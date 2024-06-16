@@ -11,6 +11,7 @@ class TestCategory:
     category_id = uuid4()
     name = faker.word()
     description = faker.sentence()
+    is_active = faker.boolean()
 
     def test_name_is_required(self):
         with pytest.raises(TypeError, match="missing 1 required positional argument: 'name'"):
@@ -42,13 +43,13 @@ class TestCategory:
             id=self.category_id,
             name=self.name,
             description=self.description,
-            is_active=False
+            is_active=self.is_active
         )
 
         assert category.id == self.category_id
         assert category.name == self.name
         assert category.description == self.description
-        assert category.is_active is False
+        assert category.is_active is self.is_active
 
     def test_can_not_create_category_with_empty_name(self):
         with pytest.raises(ValueError, match="name can not be empty or null"):
@@ -63,10 +64,13 @@ class TestCategory:
             id=self.category_id,
             name=self.name,
             description=self.description,
-            is_active=False
+            is_active=self.is_active
         )
 
-        assert str(category) == f"{category.id} - {category.name} - {category.description} - {category.is_active}"
+        assert str(category) == f"id: {self.category_id}, \
+            name: {self.name}, \
+            description: {self.description}, \
+            is_active: {self.is_active}"
 
 
     def test_the_response_of__repr__method(self):
@@ -74,10 +78,13 @@ class TestCategory:
             id=self.category_id,
             name=self.name,
             description=self.description,
-            is_active=False
+            is_active=self.is_active
         )
 
-        assert category.__repr__() == f"{category.id} - {category.name} - {category.description} - {category.is_active}"
+        assert category.__repr__() == f"id: {self.category_id}, \
+            name: {self.name}, \
+            description: {self.description}, \
+            is_active: {self.is_active}"
 
 class TestUpdateCategory:
     faker = Faker()

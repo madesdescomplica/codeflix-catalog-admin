@@ -20,10 +20,16 @@ class Category:
             raise ValueError("name can not be longer than 255 caracteres")
 
     def __str__(self) -> str:
-        return f"{self.id} - {self.name} - {self.description} - {self.is_active}"
+        return f"id: {self.id}, \
+            name: {self.name}, \
+            description: {self.description}, \
+            is_active: {self.is_active}"
 
     def __repr__(self) -> str:
-        return f"{self.id} - {self.name} - {self.description} - {self.is_active}"
+        return f"id: {self.id}, \
+            name: {self.name}, \
+            description: {self.description}, \
+            is_active: {self.is_active}"
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Category):
