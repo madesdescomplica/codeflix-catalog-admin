@@ -1,23 +1,40 @@
-from django.test import TestCase
+from faker import Faker
 from rest_framework.test import APITestCase
+
+from src.core.category.domain import Category
+from django_project.category_app.repository import DjangoORMCategoryRepository
 
 
 class TestCategoryAPI(APITestCase):
+    faker = Faker()
+
     def test_list_categories(self):
+        category = Category(
+            name=self.faker.word(),
+            description=self.faker.sentence(),
+        )
+        other_category = Category(
+            name=self.faker.word(),
+            description=self.faker.sentence(),
+        )
+        repository = DjangoORMCategoryRepository()
+        repository.save(category)
+        repository.save(other_category)
+
         url = "/api/categories/"
         response = self.client.get(url)
         expected_data = [
             {
-                "id": "9bc466a6-b7ca-450c-9c59-033447112676",
-                "name": "Movie",
-                "description": "Movie description",
-                "is_active": True
+                "id": str(category.id),
+                "name": category.name,
+                "description": category.description,
+                "is_active": category.is_active
             },
             {
-                "id": "6f7c2133-f1d3-4040-b700-c547453345d3",
-                "name": "Documentary",
-                "description": "Documentary description",
-                "is_active": True
+                "id": str(other_category.id),
+                "name": other_category.name,
+                "description": other_category.description,
+                "is_active": other_category.is_active
             }
         ]
 
