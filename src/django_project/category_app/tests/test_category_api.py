@@ -1,42 +1,58 @@
 from faker import Faker
-from rest_framework.test import APITestCase
+import pytest
+from rest_framework.test import APIClient
 
 from src.core.category.domain import Category
 from django_project.category_app.repository import DjangoORMCategoryRepository
 
 
-class TestCategoryAPI(APITestCase):
+@pytest.mark.django_db
+class TestCategoryAPI:
     faker = Faker()
 
-    def test_list_categories(self):
-        category = Category(
+    @pytest.fixture
+    def category_movie(self):
+        return Category(
             name=self.faker.word(),
             description=self.faker.sentence(),
         )
-        other_category = Category(
+
+    @pytest.fixture
+    def category_documentary(self):
+        return Category(
             name=self.faker.word(),
             description=self.faker.sentence(),
         )
-        repository = DjangoORMCategoryRepository()
-        repository.save(category)
-        repository.save(other_category)
+
+    @pytest.fixture
+    def category_repository(self) -> DjangoORMCategoryRepository:
+        return DjangoORMCategoryRepository()
+
+    def test_list_categories(
+        self,
+        category_movie: Category,
+        category_documentary: Category,
+        category_repository: DjangoORMCategoryRepository
+    ):
+        category_repository.save(category_movie)
+        category_repository.save(category_documentary)
 
         url = "/api/categories/"
-        response = self.client.get(url)
+        response = APIClient().get(url)
         expected_data = [
             {
-                "id": str(category.id),
-                "name": category.name,
-                "description": category.description,
-                "is_active": category.is_active
+                "id": str(category_movie.id),
+                "name": category_movie.name,
+                "description": category_movie.description,
+                "is_active": category_movie.is_active
             },
             {
-                "id": str(other_category.id),
-                "name": other_category.name,
-                "description": other_category.description,
-                "is_active": other_category.is_active
+                "id": str(category_documentary.id),
+                "name": category_documentary.name,
+                "description": category_documentary.description,
+                "is_active": category_documentary.is_active
             }
         ]
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, expected_data)
+        assert response.status_code == 200
+        assert response.data == expected_data
