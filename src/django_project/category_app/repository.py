@@ -7,7 +7,7 @@ from .models import Category as CategoryModel
 
 @dataclass
 class DjangoORMCategoryRepository(CategoryRepository):
-    category_model: CategoryModel = CategoryModel
+    category_model: type[CategoryModel] = CategoryModel
 
     def save(self, category: Category) -> None:
         self.category_model.objects.create(
