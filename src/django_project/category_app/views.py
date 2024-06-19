@@ -12,6 +12,8 @@ from src.core.category.application.exceptions import CategoryNotFound
 from src.core.category.application.usecases import (
     CreateCategory,
     CreateCategoryRequest,
+    DeleteCategory,
+    DeleteCategoryRequest,
     GetCategoryRequest,
     GetCategory,
     ListCategory,
@@ -22,6 +24,7 @@ from django_project.category_app.repository import DjangoORMCategoryRepository
 from django_project.category_app.serializers import (
     CreateCategoryRequestSerializer,
     CreateCategoryResponseSerializer,
+    DeleteCategoryRequestSerializer,
     ListCategoryResponseSerializer,
     RetrieveCategoryRequestSerializer,
     RetrieveCategoryResponseSerializer,
@@ -90,3 +93,17 @@ class CategoryViewSet(viewsets.ViewSet):
             return Response(status=HTTP_404_NOT_FOUND)
 
         return Response(status=HTTP_204_NO_CONTENT)
+
+    def destroy(self, request: Request, pk: None) -> Response:
+        serializer = DeleteCategoryRequestSerializer(data={"id": pk})
+        serializer.is_valid(raise_exception=True)
+
+        use_case = DeleteCategory(repository=DjangoORMCategoryRepository())
+        try:
+            use_case.execute(DeleteCategoryRequest(**serializer.validated_data))
+        except CategoryNotFound:
+            return Response(status=HTTP_404_NOT_FOUND)
+
+        return Response(status=HTTP_204_NO_CONTENT)
+
+
