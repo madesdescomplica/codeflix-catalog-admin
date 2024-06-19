@@ -1,5 +1,6 @@
-from uuid import uuid4
+from uuid import UUID, uuid4
 
+from django.urls import reverse
 from faker import Faker
 import pytest
 from rest_framework import status
@@ -100,3 +101,48 @@ class TestRetrieveAPI:
         response = APIClient().get(url)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
+class TestCreateAPI:
+    def test_return_400_when_payload_is_invalid(self):
+        url = "/api/categories/"
+        response = APIClient().post(
+            url,
+            data={
+                "name": "",
+                "description": "Movie description",
+            }
+        )
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_when_payload_is_valid_then_create_category_and_return_201(
+        self,
+        category_repository: DjangoORMCategoryRepository
+    ):
+        url = "/api/categories/"
+        response = APIClient().post(
+            url,
+            data={
+                "name": "Movie",
+                "description": "Movie description",
+            }
+        )
+
+        assert response.status_code == status.HTTP_201_CREATED
+        created_category_id = UUID(response.data["id"])
+
+        assert category_repository.get_by_id(created_category_id) == Category(
+            id=created_category_id,
+            name="Movie",
+            description="Movie description"
+        )
+
+        assert category_repository.list() == [
+            Category(
+                id=created_category_id,
+                name="Movie",
+                description="Movie description"
+            )
+        ]

@@ -8,6 +8,7 @@ from src.core.category.application.exceptions import InvalidCategory
 from src.core.category.application.usecases import (
     CreateCategory,
     CreateCategoryRequest,
+    CreateCategoryResponse
 )
 from src.core.category.domain import CategoryRepository
 
@@ -29,10 +30,11 @@ class TestCreateCategory:
             is_active=True  # default
         )
 
-        category_id = use_case.execute(request)
+        response = use_case.execute(request)
 
-        assert category_id is not None
-        assert isinstance(category_id, UUID)
+        assert response is not None
+        assert isinstance(response, CreateCategoryResponse)
+        assert isinstance(response.id, UUID)
 
     def test_create_category_with_invalid_data(self, mock_repository: CategoryRepository):
         use_case = CreateCategory(repository=mock_repository)
