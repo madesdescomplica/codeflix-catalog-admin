@@ -1,6 +1,5 @@
 from uuid import UUID, uuid4
 
-from django.urls import reverse
 from faker import Faker
 import pytest
 from rest_framework import status
