@@ -31,8 +31,10 @@ from .serializers import (
     RetrieveCategoryResponseSerializer,
     UpdateCategoryRequestSerializer
 )
+from .schema_extensions import category_viewset_schema
 
 
+@category_viewset_schema
 class CategoryViewSet(viewsets.ViewSet):
     def list(self, request: Request) -> Response:
         usecase = ListCategory(repository=DjangoORMCategoryRepository())
