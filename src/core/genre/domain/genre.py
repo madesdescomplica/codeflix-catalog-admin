@@ -3,11 +3,11 @@ from dataclasses import dataclass, field
 
 
 @dataclass
-class Category:
+class Genre:
     name: str
-    description: str = ""
     is_active: bool = True
     id: UUID = field(default_factory=uuid4)
+    categories: set[UUID] = field(default_factory=set)
 
     def __post_init__(self):
         self.validate()
@@ -22,24 +22,21 @@ class Category:
     def __str__(self) -> str:
         return f"id: {self.id}, \
             name: {self.name}, \
-            description: {self.description}, \
             is_active: {self.is_active}"
 
     def __repr__(self) -> str:
         return f"id: {self.id}, \
             name: {self.name}, \
-            description: {self.description}, \
             is_active: {self.is_active}"
 
     def __eq__(self, other) -> bool:
-        if not isinstance(other, Category):
+        if not isinstance(other, Genre):
             return False
 
         return self.id == other.id
 
-    def update_category(self, name, description):
+    def update_name(self, name):
         self.name = name
-        self.description = description
         self.validate()
 
     def activate(self):
@@ -48,4 +45,12 @@ class Category:
 
     def deactivate(self):
         self.is_active = False
+        self.validate()
+
+    def add_category(self, category_id: UUID):
+        self.categories.add(category_id)
+        self.validate()
+
+    def remove_category(self, category_id: UUID):
+        self.categories.remove(category_id)
         self.validate()
