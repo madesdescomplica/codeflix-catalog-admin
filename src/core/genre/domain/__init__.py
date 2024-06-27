@@ -1,1 +1,0 @@
-from .genre import Genre
